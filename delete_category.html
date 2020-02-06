@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript">
+function deleter(){
+var http = new XMLHttpRequest();
+var url='http://localhost/php_item_rest/api/ItemCategory/delete.php';
+var params='{"itemCategoryId":"3"}';
+
+
+http.open('post',url);
+
+http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");	
+
+http.onreadystatechange = function(){
+if (http.readyState==4)
+{ 
+	try{
+		str = http.responseText;
+		alert(str);
+	}
+	catch(err){
+		alert(err);
+	}
+}
+}
+http.send(params);
+
+}
+</script>
+</head>
+<body>
+<a href="#" onclick="javascript:deleter()">Delete</a>
+</body>
+</html>

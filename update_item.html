@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+
+    <title>REST PHP Item</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css" type="text/css"/>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.css" type="text/css"/>
+
+
+
+
+
+    <script type="text/javascript">
+        function list(){
+            var http = new XMLHttpRequest();
+            var url='api/ItemCategory/read.php';
+
+
+
+            http.open('post',url);
+
+            http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            http.onreadystatechange = function(){
+                if (http.readyState==4)
+                {
+                        try{
+                                str = http.responseText;
+                                var jsonData = JSON.parse(str);
+                                var select = document.getElementById('itemCategoryId');
+                                for (var i = 0; i < jsonData.data.length ; i++){
+                                    var item = jsonData.data[i];
+                                    var el = document.createElement('option');
+                                    el.textContent = item.itemCategoryName;
+                                    el.value = item.itemCategoryId;
+                                    select.appendChild(el);
+                                }
+                        }
+                        catch(err){
+                                alert(err);
+                        }
+                }
+            }
+            http.send(null);
+
+
+        }
+
+        function read_single(){
+            var http = new XMLHttpRequest();
+            
+            var id= window.location.href.split('?')[1].split('=')[1];
+
+            var url='api/Item/read_single.php?id='+id;
+
+            http.open('get',url);
+
+            http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            http.onreadystatechange = function(){
+                if (http.readyState==4)
+                {
+                        try{
+                                str = http.responseText;
+                                var jsonData = JSON.parse(str);
+                                document.getElementById('itemName').value=jsonData.itemName;
+                                document.getElementById('itemId').value=jsonData.itemId;
+                                
+                                var sel = document.getElementById('itemCategoryId');
+                                for (var i=0 ; i < sel.length; i++) {
+                                    if (sel.children[i].value==jsonData.itemCategoryId) {
+                                        break;
+                                    }
+                                 }
+                                
+                                sel.options.selectedIndex = i;
+                        }
+                        catch(err){
+                                alert(err);
+                        }
+                }
+            }
+            http.send(null);
+
+
+        }
+
+        function update(){
+            var http = new XMLHttpRequest();
+            var url='api/Item/update.php';
+            
+            value=document.getElementById('itemName').value;
+            valueI=document.getElementById('itemId').value;
+            valueId=document.getElementById('itemCategoryId').value;
+
+            var params='{"itemId":"'+valueI+'","itemName":"'+value+'","itemCategoryId":"'+valueId+'"}';
+            
+
+            http.open('post',url);
+
+            http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            http.onreadystatechange = function(){
+            if (http.readyState==4)
+            {
+                    try{
+                            str = http.responseText;
+                            var jsonData = JSON.parse(str);
+                            alert (jsonData.message );
+                    }
+                    catch(err){
+                            alert(err);
+                    }
+            }
+            }
+            http.send(params);
+
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default" role="navigation">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">REST PHP</a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="list_category.html">List Item Categories</a></li>
+              <li><a href="insert_category.html">Create Item Categories</a></li>
+              <li><a href="list_item.html">List Items</a></li>
+              <li><a href="insert_item.html">Create Items</a></li>
+            </ul>
+
+
+          </div><!-- /.navbar-collapse -->
+        </nav>
+
+        <div class="content">
+            <div class="row">
+                <h3>Update Item</h3>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    Item Name
+                </div>
+                <div class="col-md-4">
+                    <input type="text" name="itemName" id="itemName" placeholder="Item Name" class="form-control"/>
+                    <input type="hidden" name="itemId" id="itemId" placeholder="Item Category Name" class="form-control"/>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    Item Category Name
+                </div>
+                <div class="col-md-4">
+                    <select name="itemCategoryId" id="itemCategoryId" class="form-control">
+                        <option value="0">-Select One-</option>
+                    </select>
+                </div>
+                <script>list();</script>
+            </div>
+            <div class="row">
+                &nbsp;
+            </div>
+            <div class="row">
+                <div class="col-md-2 col-md-offset-2">
+                    <a href="#" class="btn btn-default" onclick="javascript:update()">Update</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>read_single();</script>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+
+</body>
+</html>
+
